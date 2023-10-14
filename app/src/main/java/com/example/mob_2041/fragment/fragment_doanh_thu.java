@@ -1,5 +1,7 @@
 package com.example.mob_2041.fragment;
 
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,60 +9,109 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.mob_2041.R;
+import com.example.mob_2041.dao.ThongKeDao;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link fragment_doanh_thu#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.Calendar;
+
 public class fragment_doanh_thu extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public fragment_doanh_thu() {
-        // Required empty public constructor
-    }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment fragment_doanh_thu.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static fragment_doanh_thu newInstance(String param1, String param2) {
-        fragment_doanh_thu fragment = new fragment_doanh_thu();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
+    TextView txtDoanhThu;
+    EditText txtdayEnd, txtdayStart;
+    Button btndayStart, btndayEnd, DoanhThu;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_doanh_thu, container, false);
+        View view = inflater.inflate(R.layout.fragment_doanh_thu, container, false);
+        txtdayStart = view.findViewById(R.id.edTuNgay);
+        txtdayEnd = view.findViewById(R.id.edDenNgay);
+        btndayStart = view.findViewById(R.id.btnTuNgay);
+        btndayEnd = view.findViewById(R.id.btnDenNgay);
+        DoanhThu = view.findViewById(R.id.btnDoanhThu);
+        txtDoanhThu = view.findViewById(R.id.tvDoanhThu);
+
+        Calendar calendar = Calendar.getInstance();
+        btndayStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatePickerDialog dialog = new DatePickerDialog(
+                        getContext(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        String Ngay = "";
+                        String Thang = "";
+                        if(i2 < 10){
+                            Ngay = "0" + i2;
+                        }else{
+                            Ngay = String.valueOf(i2);
+                        }
+
+                        if((i1 + 1) < 10){
+                            Thang = "0" + (i1 + 1);
+                        }else{
+                            Thang = String.valueOf(i1 + 1);
+                        }
+                        txtdayStart.setText(i + "/" + Thang + "/" + Ngay);
+                    }
+                },
+                        calendar.get(calendar.YEAR),
+                        calendar.get(calendar.MONTH),
+                        calendar.get(calendar.DAY_OF_MONTH)
+                );
+                dialog.show();
+            }
+        });
+
+        btndayEnd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatePickerDialog dialog = new DatePickerDialog(
+                        getContext(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        String Ngay = "";
+                        String Thang = "";
+                        if(i2 < 10){
+                            Ngay = "0" + i2;
+                        }else{
+                            Ngay = String.valueOf(i2);
+                        }
+
+                        if((i1 + 1) < 10){
+                            Thang = "0" + (i1 + 1);
+                        }else{
+                            Thang = String.valueOf(i1 + 1);
+                        }
+                        txtdayEnd.setText(i + "/" + Thang + "/" + Ngay);
+                    }
+                },
+                        calendar.get(calendar.YEAR),
+                        calendar.get(calendar.MONTH),
+                        calendar.get(calendar.DAY_OF_MONTH)
+                );
+                dialog.show();
+            }
+        });
+
+        DoanhThu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ThongKeDao dao = new ThongKeDao(getContext());
+                String ngaybatdau = txtdayStart.getText().toString();
+                String ngayketthuc = txtdayEnd.getText().toString();
+                int doanhthu1 = dao.getDoanhThu(ngaybatdau, ngayketthuc);
+                txtDoanhThu.setText(doanhthu1 + " $");
+            }
+        });
+        return view;
     }
 }

@@ -10,8 +10,8 @@ import com.example.mob_2041.model.Sach;
 import java.util.ArrayList;
 
 public class ThongKeDao {
+   private SQLiteDatabase db ;
     DbHelper dbHelper;
-
     public ThongKeDao(Context context) {
         dbHelper = new DbHelper(context);
     }

@@ -1,6 +1,8 @@
 package com.example.mob_2041.model;
 
-public class ThuThu {
+import java.io.Serializable;
+
+public class ThuThu implements Serializable {
     private String MaTT,MatKhau,HoTen;
 
     public ThuThu() {

@@ -11,8 +11,11 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.mob_2041.fragment.fragment_add_user;
 import com.example.mob_2041.fragment.fragment_doanh_thu;
@@ -22,6 +25,7 @@ import com.example.mob_2041.fragment.fragment_phieu_muon;
 import com.example.mob_2041.fragment.fragment_sach;
 import com.example.mob_2041.fragment.fragment_thanh_vien;
 import com.example.mob_2041.fragment.fragment_top_10;
+import com.example.mob_2041.model.ThuThu;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     NavigationView navigationView;
     DrawerLayout drawerLayout;
     Context context = this;
+    View header;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +41,10 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.navigationView);
         drawerLayout = findViewById(R.id.drawerLayout);
-
+        header = navigationView.getHeaderView(0);
+        Intent intent = getIntent();
+        String thuThu = intent.getStringExtra("MaTT");
+        dataHeader(thuThu);
         setSupportActionBar(toolbar);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open,R.string.close);
@@ -96,6 +104,11 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    private void dataHeader(String thuThu) {
+        TextView ten = header.findViewById(R.id.tenTTT);
+        ten.setText(thuThu);
     }
 
     public void relaceFrg(Fragment frg){
