@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 public class DbHelper extends SQLiteOpenHelper {
 
     static final String dbName = "PhuongNamLib";
-    static final int dbVersion = 1;
+    static final int dbVersion = 3;
 
     public DbHelper(@Nullable Context context) {
         super(context, dbName, null, dbVersion);
@@ -42,7 +42,8 @@ public class DbHelper extends SQLiteOpenHelper {
         String tb_Sach = "create table Sach(" +
                 "MaSach integer primary key autoincrement," +
                 "TenSach text not null," +
-                "GiaThue integer not null," +
+                "GiaThue integer not null,"+
+                "NamXuatBan integer not null,"+
                 "MaLoai integer references LoaiSach(MaLoai))";
         db.execSQL(tb_Sach);
 
@@ -59,7 +60,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         //data mẫu
         db.execSQL("INSERT INTO LoaiSach VALUES (1, 'Thiếu nhi'),(2,'Tình cảm'),(3, 'Giáo khoa')");
-        db.execSQL("INSERT INTO Sach VALUES (1, 'Giáo án thiếu nhi', 2500, 1), (2, 'Cô bé quàng khăn đỏ', 1000, 1), (3, 'Chuyên đề tiếng anh', 1000, 3)");
+        db.execSQL("INSERT INTO Sach VALUES (1, 'Giáo án thiếu nhi', 2500,2013, 1), (2, 'Cô bé quàng khăn đỏ', 1000,2014, 1), (3, 'Chuyên đề tiếng anh', 1000,2015, 3)");
         db.execSQL("INSERT INTO ThuThu VALUES ('thuthu01','Phạm Văn Nam','123456','Admin'),('thuthu02','Nguyễn Thị Thùy','333333','ThuThu')");
         db.execSQL("INSERT INTO ThanhVien VALUES (1,'Nguyễn Văn Hinh','2004'),(2,'Phạm Hải Nam','2002')");
         //trả sách: 1: đã trả - 0: chưa trả

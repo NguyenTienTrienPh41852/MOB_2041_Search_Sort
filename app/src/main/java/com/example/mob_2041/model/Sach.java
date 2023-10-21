@@ -9,6 +9,8 @@ public class Sach {
     private String TenLoai;
     private int SoLanMuon;
 
+    private int namXuatBan;
+
     public Sach() {
     }
 
@@ -18,6 +20,16 @@ public class Sach {
         GiaThue = giaThue;
         MaLoai = maLoai;
         TenLoai = tenLoai;
+    }
+
+    public Sach(int maSach, String tenSach, int giaThue, int maLoai, String tenLoai, int soLanMuon, int namXuatBan) {
+        MaSach = maSach;
+        TenSach = tenSach;
+        GiaThue = giaThue;
+        MaLoai = maLoai;
+        TenLoai = tenLoai;
+        SoLanMuon = soLanMuon;
+        this.namXuatBan = namXuatBan;
     }
 
     public Sach(int maSach, String tenSach, int soLanMuon) {
@@ -72,6 +84,14 @@ public class Sach {
 
     public void setTenLoai(String tenLoai) {
         TenLoai = tenLoai;
+    }
+
+    public int getNamXuatBan() {
+        return namXuatBan;
+    }
+
+    public void setNamXuatBan(int namXuatBan) {
+        this.namXuatBan = namXuatBan;
     }
 }
 

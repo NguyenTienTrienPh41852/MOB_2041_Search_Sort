@@ -38,6 +38,18 @@
             android:id="@+id/ed_addGiaThue"/>
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="10dp"
+        android:id="@+id/in_addNamXuatBan">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nhập năm xuất bản"
+            android:id="@+id/ed_addNamXuatBan"/>
+    </com.google.android.material.textfield.TextInputLayout>
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="50dp"

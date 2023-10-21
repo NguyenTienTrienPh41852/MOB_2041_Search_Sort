@@ -19,21 +19,29 @@ public class SachDao {
     public ArrayList<Sach> getDSSach(){
         ArrayList<Sach> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select sc.MaSach, sc.TenSach, sc.GiaThue, ls.MaLoai, ls.HoTen from Sach sc, LoaiSach ls where sc.MaLoai = ls.MaLoai",null);
+        Cursor cursor = db.rawQuery("select sc.MaSach, sc.TenSach, sc.GiaThue,sc.NamXuatBan, ls.MaLoai, ls.HoTen from Sach sc, LoaiSach ls where sc.MaLoai = ls.MaLoai",null);
         if(cursor.getCount() != 0){
             cursor.moveToFirst();
             do {
-                list.add(new Sach(cursor.getInt(0),cursor.getString(1),cursor.getInt(2),cursor.getInt(3),cursor.getString(4)));
+                Sach sach = new Sach();
+                sach.setMaSach(cursor.getInt(0));
+                sach.setTenSach(cursor.getString(1));
+                sach.setGiaThue(cursor.getInt(2));
+                sach.setNamXuatBan(cursor.getInt(3));
+                sach.setMaLoai(cursor.getInt(4));
+                sach.setTenLoai(cursor.getString(5));
+                list.add(sach);
             }while (cursor.moveToNext());
         }
         return list;
     }
 
-    public boolean insert(String tensach, int tienthue, int maloai){
+    public boolean insert(String tensach, int tienthue,int namxuatban, int maloai){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         ContentValues values = new ContentValues();
         values.put("TenSach",tensach);
         values.put("GiaThue",tienthue);
+        values.put("NamXuatBan",namxuatban);
         values.put("MaLoai",maloai);
         long check = db.insert("Sach",null,values);
         if(check == -1){
@@ -43,11 +51,12 @@ public class SachDao {
         }
     }
 
-    public boolean update(int masach, String tensach, int giathue, int maloai){
+    public boolean update(int masach, String tensach, int giathue,int namxuatban, int maloai){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("TenSach",tensach);
         values.put("GiaThue",giathue);
+        values.put("NamXuatBan",namxuatban);
         values.put("MaLoai",maloai);
         long check = db.update("Sach",values,"MaSach = ?", new String[]{String.valueOf(masach)});
         if(check == -1){

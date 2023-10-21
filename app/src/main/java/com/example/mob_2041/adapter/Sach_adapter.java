@@ -56,6 +56,7 @@ public class Sach_adapter extends RecyclerView.Adapter<Sach_adapter.ViewHolder> 
         holder.txtMaSach.setText(String.valueOf(list.get(position).getMaSach()));
         holder.txtTenSach.setText(list.get(position).getTenSach());
         holder.txtGiaThue.setText(String.valueOf(list.get(position).getGiaThue()));
+        holder.txtNamXuatBan.setText(String.valueOf(list.get(position).getNamXuatBan()));
         holder.txtLoaiSach.setText(String.valueOf(list.get(position).getMaLoai()));
         holder.txtTenLS.setText(list.get(position).getTenLoai());
 
@@ -106,13 +107,14 @@ public class Sach_adapter extends RecyclerView.Adapter<Sach_adapter.ViewHolder> 
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView txtMaSach, txtTenSach, txtGiaThue, txtLoaiSach, txtTenLS;
+        TextView txtMaSach, txtTenSach, txtGiaThue,txtNamXuatBan, txtLoaiSach, txtTenLS;
         ImageView Sach_Delete;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtMaSach = itemView.findViewById(R.id.MaSach);
             txtTenSach = itemView.findViewById(R.id.TenS);
             txtGiaThue = itemView.findViewById(R.id.Sach_GiaThue);
+            txtNamXuatBan = itemView.findViewById(R.id.Sach_NamXuatBan);
             txtLoaiSach = itemView.findViewById(R.id.Sach_LS);
             txtTenLS = itemView.findViewById(R.id.Sach_TenLS);
             Sach_Delete = itemView.findViewById(R.id.S_Delete);
@@ -130,14 +132,17 @@ public class Sach_adapter extends RecyclerView.Adapter<Sach_adapter.ViewHolder> 
 
         TextInputLayout in_TenSach = view.findViewById(R.id.in_updateTenS);
         TextInputLayout in_GiaThue = view.findViewById(R.id.in_updateGiaThue);
+        TextInputLayout in_NamXuatBan = view.findViewById(R.id.in_updateNamXuatBan);
         TextInputEditText ed_TenSach = view.findViewById(R.id.ed_updateTenS);
         TextInputEditText ed_GiaThue = view.findViewById(R.id.ed_updateGiaThue);
+        TextInputEditText ed_NamXuatBan = view.findViewById(R.id.ed_updateNamXuatBan);
         Spinner spnSach = view.findViewById(R.id.spnSach);
         Button add = view.findViewById(R.id.S_update);
 
 
         ed_TenSach.setText(sach.getTenSach());
         ed_GiaThue.setText(String.valueOf(sach.getGiaThue()));
+        ed_NamXuatBan.setText((String.valueOf(sach.getNamXuatBan())));
 
         ed_TenSach.addTextChangedListener(new TextWatcher() {
             @Override
@@ -180,6 +185,26 @@ public class Sach_adapter extends RecyclerView.Adapter<Sach_adapter.ViewHolder> 
 
             }
         });
+        ed_NamXuatBan.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.length() == 0){
+                    in_NamXuatBan.setError("Vui lòng không để trống năm xuất bản");
+                }else{
+                    in_NamXuatBan.setError(null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         SimpleAdapter simpleAdapter = new SimpleAdapter(
                 context,
@@ -205,11 +230,12 @@ public class Sach_adapter extends RecyclerView.Adapter<Sach_adapter.ViewHolder> 
             public void onClick(View view) {
                 String tensach = ed_TenSach.getText().toString();
                 String checktien = ed_GiaThue.getText().toString();;
+                String checknamxuatban = ed_NamXuatBan.getText().toString();
                 HashMap<String, Object> hs = (HashMap<String, Object>) spnSach.getSelectedItem();
                 int maloai = (int) hs.get("MaLoai");
 
 
-                if(tensach.isEmpty() || checktien.isEmpty()){
+                if(tensach.isEmpty() || checktien.isEmpty() || checknamxuatban.isEmpty()){
                     if(tensach.equals("")){
                         in_TenSach.setError("Vui lòng không để trống tên sách");
                     }else{
@@ -221,9 +247,16 @@ public class Sach_adapter extends RecyclerView.Adapter<Sach_adapter.ViewHolder> 
                     }else{
                         in_GiaThue.setError(null);
                     }
+
+                    if(checknamxuatban.equals("")){
+                        in_GiaThue.setError("Vui lòng không để trống năm xuất bản");
+                    }else{
+                        in_GiaThue.setError(null);
+                    }
                 }else{
                     int tien = Integer.parseInt(checktien);
-                    boolean check = sachDao.update(sach.getMaSach(),tensach,tien,maloai);
+                    int namxuatban = Integer.parseInt(checknamxuatban);
+                    boolean check = sachDao.update(sach.getMaSach(),tensach,tien,namxuatban,maloai);
                     if(check){
                         loadData();
                         Toast.makeText(context, "Cập nhật thành công sách", Toast.LENGTH_SHORT).show();

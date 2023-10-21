@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -30,7 +31,9 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 
 public class fragment_sach extends Fragment {
 
@@ -41,7 +44,10 @@ public class fragment_sach extends Fragment {
     RecyclerView rcv;
     FloatingActionButton fltAdd;
     ArrayList<Sach> list;
+    ArrayList<Sach> listPhu;
+    Sach_adapter sachAdapter;
     SachDao sachDao;
+    Sach sach;
     @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,8 +56,8 @@ public class fragment_sach extends Fragment {
         View view = inflater.inflate(R.layout.fragment_sach, container, false);
         rcv = view.findViewById(R.id.rcv_S);
         fltAdd = view.findViewById(R.id.add_S);
-
         sachDao = new SachDao(getContext());
+
         loadData();
 
         fltAdd.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +68,8 @@ public class fragment_sach extends Fragment {
         });
 
         return view;
+
+
     }
 
     @SuppressLint("MissingInflatedId")
@@ -75,10 +83,16 @@ public class fragment_sach extends Fragment {
 
         TextInputLayout in_TenSach = view.findViewById(R.id.in_addTenS);
         TextInputLayout in_GiaThue = view.findViewById(R.id.in_addGiaThue);
+        TextInputLayout in_NamXuatBan = view.findViewById(R.id.in_addNamXuatBan);
         TextInputEditText ed_TenSach = view.findViewById(R.id.ed_addTenS);
         TextInputEditText ed_GiaThue = view.findViewById(R.id.ed_addGiaThue);
+        TextInputEditText ed_NamXuatBan = view.findViewById(R.id.ed_addNamXuatBan);
         Spinner spnSach = view.findViewById(R.id.spnSach);
         Button add = view.findViewById(R.id.S_add);
+        Button tang = view.findViewById(R.id.btnTang);
+        Button giam = view.findViewById(R.id.btnGiam);
+        EditText edtTimKiem = view.findViewById(R.id.edtTimKiem);
+
 
 
         ed_TenSach.addTextChangedListener(new TextWatcher() {
@@ -123,6 +137,27 @@ public class fragment_sach extends Fragment {
             }
         });
 
+        ed_NamXuatBan.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.length() == 0){
+                    in_NamXuatBan.setError("Vui lòng không để trống giá thuê");
+                }else{
+                    in_NamXuatBan.setError(null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
         SimpleAdapter simpleAdapter = new SimpleAdapter(
                 getContext(),
                 getDSLoaiSach(),
@@ -137,6 +172,7 @@ public class fragment_sach extends Fragment {
             public void onClick(View view) {
                 String tensach = ed_TenSach.getText().toString();
                 String checktien = ed_GiaThue.getText().toString();;
+                String checknamxuatban = ed_NamXuatBan.getText().toString();
                 HashMap<String, Object> hs = (HashMap<String, Object>) spnSach.getSelectedItem();
                 int maloai = (int) hs.get("MaLoai");
 
@@ -153,9 +189,16 @@ public class fragment_sach extends Fragment {
                     }else{
                         in_GiaThue.setError(null);
                     }
+
+                    if(checknamxuatban.equals("")){
+                        in_NamXuatBan.setError("Vui lòng không để trống giá thuê");
+                    }else{
+                        in_NamXuatBan.setError(null);
+                    }
                 }else{
                     int tien = Integer.parseInt(checktien);
-                    boolean check = sachDao.insert(tensach,tien,maloai);
+                    int namxuatban = Integer.parseInt(checknamxuatban);
+                    boolean check = sachDao.insert(tensach,tien,namxuatban,maloai);
                     if(check){
                         loadData();
                         Toast.makeText(getContext(), "Thêm thành công sách", Toast.LENGTH_SHORT).show();
@@ -167,7 +210,48 @@ public class fragment_sach extends Fragment {
 
             }
         });
+        edtTimKiem.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                list.clear();
+                String searchText = s.toString().toLowerCase();
+                for(Sach sach: listPhu){
+                    String tenSach = sach.getTenSach().toLowerCase();
+                    if (tenSach.contains(searchText)){
+                        list.add(sach);
+                    }
+                }
+               rcv.setAdapter(sachAdapter);
+                sachAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        tang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+    sapXepTang(list);
+    rcv.setAdapter(sachAdapter);
+    sachAdapter.notifyDataSetChanged();
+            }
+        });
+        giam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sapXepGiam(list);
+                rcv.setAdapter(sachAdapter);
+                sachAdapter.notifyDataSetChanged();
+            }
+        });
 
     }
 
@@ -184,9 +268,15 @@ public class fragment_sach extends Fragment {
         }
         return listHM;
     }
-
+    private void sapXepTang(List<Sach> ds){
+        ds.sort(Comparator.comparing(Sach::getGiaThue));
+    }
+    private void sapXepGiam(List<Sach> ds){
+        ds.sort(Comparator.comparing(Sach::getGiaThue).reversed());
+    }
     private void loadData(){
         list = sachDao.getDSSach();
+        listPhu = sachDao.getDSSach();
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         rcv.setLayoutManager(layoutManager);
         Sach_adapter adapter = new Sach_adapter(getContext(),list, getDSLoaiSach(), sachDao);

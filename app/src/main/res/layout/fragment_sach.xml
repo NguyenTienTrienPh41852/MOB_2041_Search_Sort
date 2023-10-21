@@ -9,11 +9,43 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+
+        <EditText
+            android:id="@+id/edtTimKiem"
+            android:layout_width="387dp"
+            android:layout_height="wrap_content"
+            android:hint="Tìm kiếm"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
             android:layout_gravity="center"
-            android:id="@+id/rcv_S"/>
+            />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            >
+            <Button
+                android:id="@+id/btnTang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sắp xếp tăng"
+                android:layout_marginRight="20dp"
+                />
+            <Button
+                android:id="@+id/btnGiam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sắp xếp giảm"
+                />
+        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcv_S"
+            android:layout_width="match_parent"
+            android:layout_height="590dp"
+
+            android:layout_gravity="center" />
+
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
